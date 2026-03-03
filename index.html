@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPACE FORCE - CYBER DOMINION v3.0</title>
+  <style>
+    :root {
+      --spaceforce-blue: #00b7eb;
+      --cyber-red: #ff003c;
+      --cyber-orange: #ffaa00;
+      --cyber-green: #00ff88;
+      --dark-space: #0a0a1a;
+      --glitch-size: 4px;
+      --scanline-opacity: 0.12;
+      --force-gold: #ffd700;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', 'Courier New', monospace;
+    }
+
+    body {
+      background: radial-gradient(ellipse at center, #0a0a1a 0%, #000 70%);
+      color: var(--spaceforce-blue);
+      overflow: hidden;
+      height: 100vh;
+      perspective: 1200px;
+    }
+
+    .stars-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+        radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+        radial-gradient(1px 1px at 90px 40px, #ddd, transparent),
+        radial-gradient(1px 1px at 130px 80px, #fff, transparent);
+      background-repeat: repeat;
+      background-size: 200px 100px;
+      animation: starfield 50s linear infinite;
+      z-index: -2;
+    }
+
+    @keyframes starfield {
+      from { transform: translateY(0px); }
+      to { transform: translateY(-100px); }
+    }
+
+    /* CRT Overlay */
+    .crt-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      background-image: 
+        linear-gradient(rgba(18,16,16,var(--scanline-opacity)) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,183,235,0.02) 1px, transparent 1px);
+      background-size: 100% 4px, 4px 100%;
+    }
+
+    #spaceforce-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      grid-template-columns: 340px 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+      padding: 20px;
+      gap: 20px;
+    }
+
+    #header {
+      grid-area: header;
+      padding: 30px;
+      border-bottom: 3px solid var(--spaceforce-blue);
+      background: rgba(0,183,235,0.08);
+      backdrop-filter: blur(20px);
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .spaceforce-emblem {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      font-size: 2em;
+      color: var(--force-gold);
+      text-shadow: 0 0 20px var(--force-gold);
+      animation: emblem-glow 3s infinite alternate;
+    }
+
+    @keyframes emblem-glow {
+      0% { text-shadow: 0 0 15px var(--force-gold); }
+      100% { text-shadow: 0 0 30px var(--force-gold), 0 0 40px var(--spaceforce-blue); }
+    }
+
+    #title {
+      font-size: 2.6em;
+      letter-spacing: 12px;
+      text-transform: uppercase;
+      animation: space-glitch 4s infinite;
+      text-shadow: 0 0 25px var(--spaceforce-blue);
+    }
+
+    @keyframes space-glitch {
+      0%, 90% { transform: skew(0deg); }
+      20% { transform: skew(-5deg); }
+      40% { transform: skew(5deg); }
+      60% { transform: skew(-2deg); }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      padding: 12px 20px;
+      background: rgba(255,215,0,0.2);
+      border: 2px solid var(--force-gold);
+      color: var(--force-gold);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s;
+    }
+
+    .nav-btn:hover::before { left: 100%; }
+    .nav-btn:hover {
+      background: var(--force-gold);
+      color: #000;
+      box-shadow: 0 0 25px var(--force-gold);
+      transform: scale(1.05);
+    }
+
+    .nav-btn.cyber { border-color: var(--cyber-cyan); color: var(--cyber-cyan); }
+    .nav-btn.cyber:hover { background: var(--cyber-cyan); }
+
+    #status-panel {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    .status-indicator {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      box-shadow: 0 0 15px currentColor;
+      animation: status-pulse 2s infinite;
+    }
+
+    .status-indicator.blue { background: var(--spaceforce-blue); }
+    .status-indicator.green { background: var(--cyber-green); animation-delay: 0.5s; }
+    .status-indicator.red { background: var(--cyber-red); animation-delay: 1s; }
+
+    @keyframes status-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    #sidebar {
+      grid-area: sidebar;
+      padding: 30px;
+      border-right: 3px solid var(--spaceforce-blue);
+      background: rgba(0,183,235,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      overflow-y: auto;
+    }
+
+    .control-panel {
+      background: rgba(0,183,235,0.1);
+      border: 2px solid var(--spaceforce-blue);
+      padding: 25px;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .control-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--spaceforce-blue), var(--force-gold));
+      animation: scanline 4s infinite;
+    }
+
+    .panel-title {
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+      background: linear-gradient(45deg, var(--spaceforce-blue), var(--force-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .command-input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(0,0,0,0.7);
+      border: 2px solid var(--spaceforce-blue);
+      color: var(--spaceforce-blue);
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-size: 1.1em;
+      transition: all 0.4s;
+    }
+
+    .command-input:focus {
+      outline: none;
+      box-shadow: 0 0 25px var(--spaceforce-blue);
+      border-color: var(--force-gold);
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .space-btn {
+      padding: 15px;
+      background: transparent;
+      border: 2px solid var(--spaceforce-blue);
+      color: var(--spaceforce-blue);
+      cursor: pointer;
+      transition: all 0.4s;
+      border-radius: 6px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+    }
+
+    .space-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .space-btn:hover::before { left: 100%; }
+    .space-btn:hover {
+      background: var(--spaceforce-blue);
+      color: #000;
+      box-shadow: 0 0 30px var(--spaceforce-blue);
+      transform: translateY(-3px);
+    }
+
+    .space-btn.danger {
+      border-color: var(--cyber-red);
+      color: var(--cyber-red);
+    }
+
+    .space-btn.danger:hover {
+      background: var(--cyber-red);
+      box-shadow: 0 0 30px var(--cyber-red);
+    }
+
+    #main-content {
+      grid-area: main;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto auto;
+      gap: 25px;
+      padding: 30px;
+      overflow: hidden;
+    }
+
+    #terminal {
+      background: rgba(0,183,235,0.1);
+      border: 3px solid var(--spaceforce-blue);
+      padding: 25px;
+      overflow-y: auto;
+      height: 250px;
+      border-radius: 10px;
+      font-size: 1em;
+      line-height: 1.7;
+    }
+
+    .terminal-line {
+      margin-bottom: 10px;
+      animation: terminal-fade 0.5s ease-out;
+      position: relative;
+    }
+
+    .terminal-line.typing::after {
+      content: '█';
+      animation: blink-cursor 1s infinite;
+    }
+
+    @keyframes blink-cursor {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .data-visualization {
+      height: 320px;
+      background: rgba(0,0,0,0.6);
+      border: 3px solid var(--spaceforce-blue);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .orbital-sweep {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border: 3px solid var(--spaceforce-blue);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbital-sweep 5s infinite linear;
+    }
+
+    @keyframes orbital-sweep {
+      0% { width: 0; height: 0; opacity: 1; }
+      70% { width: 600px; height: 600px; opacity: 0.4; }
+      100% { width: 1200px; height: 1200px; opacity: 0; }
+    }
+
+    .target-grid {
+      background: rgba(255,0,60,0.15);
+      border: 3px solid var(--cyber-red);
+      padding: 30px;
+      border-radius: 12px;
+      grid-row: 4;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    .info-item {
+      background: rgba(0,0,0,0.5);
+      padding: 25px;
+      border-radius: 8px;
+      text-align: center;
+      transition: all 0.4s;
+      border: 1px solid rgba(0,183,235,0.3);
+    }
+
+    .info-item:hover {
+      box-shadow: 0 0 30px var(--spaceforce-blue);
+      border-color: var(--spaceforce-blue);
+    }
+
+    .info-item.locked {
+      box-shadow: 0 0 40px var(--force-gold);
+      border-color: var(--force-gold);
+      animation: target-lock 1.5s infinite alternate;
+    }
+
+    @keyframes target-lock {
+      0% { box-shadow: 0 0 30px var(--force-gold); }
+      100% { box-shadow: 0 0 50px var(--force-gold); }
+    }
+
+    .info-label {
+      color: var(--cyber-red);
+      text-transform: uppercase;
+      font-size: 0.9em;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .info-value {
+      font-size: 1.6em;
+      font-weight: bold;
+      text-shadow: 0 0 20px currentColor;
+    }
+
+    #weapon-panel {
+      background: rgba(0,183,235,0.1);
+      border: 3px solid var(--spaceforce-blue);
+      padding: 30px;
+      border-radius: 12px;
+      grid-row: 5;
+      display: grid;
+      grid-template-rows: auto auto auto;
+      gap: 30px;
+    }
+
+    .weapon-section h3 {
+      color: var(--force-gold);
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      margin-bottom: 25px;
+      font-size: 1.3em;
+      text-shadow: 0 0 20px var(--force-gold);
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .status-item {
+      text-align: center;
+    }
+
+    .status-label {
+      color: var(--cyber-orange);
+      text-transform: uppercase;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+    }
+
+    .status-bar {
+      background: rgba(0,0,0,0.7);
+      height: 15px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid rgba(255,215,0,0.3);
+    }
+
+    .status-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyber-green), var(--spaceforce-blue), var(--force-gold));
+      transition: width 1s ease;
+      border-radius: 6px;
+      box-shadow: 0 0 20px currentColor;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    .action-button {
+      padding: 20px;
+      background: transparent;
+      border: 3px solid var(--spaceforce-blue);
+      color: var(--spaceforce-blue);
+      font-size: 1.1em;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.5s;
+      letter-spacing: 3px;
+    }
+
+    .action-button:hover {
+      background: var(--spaceforce-blue);
+      color: #000;
+      box-shadow: 0 0 40px var(--spaceforce-blue);
+      transform: translateY(-5px) scale(1.05);
+    }
+
+    #footer {
+      grid-area: footer;
+      padding: 25px 30px;
+      border-top: 3px solid var(--spaceforce-blue);
+      background: rgba(0,183,235,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1em;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Effects */
+    @keyframes terminal-fade {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .shake {
+      animation: space-shake 0.8s cubic-bezier(.36,.07,.19,.97);
+    }
+
+    @keyframes space-shake {
+      0%, 100% { transform: translate3d(0,0,0); }
+      10%, 30%, 50%, 70%, 90% { transform: translate3d(-5px,0,0); }
+      20%, 40%, 60%, 80% { transform: translate3d(5px,0,0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #spaceforce-container {
+        grid-template-columns: 1fr;
+        grid-template-areas: "header" "sidebar" "main" "footer";
+        padding: 15px;
+      }
+      #sidebar { order: 3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars-bg"></div>
+  <div class="crt-overlay"></div>
+
+  <div id="spaceforce-container">
+    <!-- Header -->
+    <header id="header">
+      <div class="spaceforce-emblem">⭐</div>
+      <div id="title">SPACE FORCE<br>CYBER DOMINION v3.0</div>
+      <div class="nav-links">
+        <a href="https://tharahuokaing.github.io/solar-system/" class="nav-btn" target="_blank">🌌 SOLAR SYSTEM</a>
+        <a href="https://tharahuokaing.github.io/solar-cyber-empire/" class="nav-btn cyber" target="_blank">👑 CYBER EMPIRE</a>
+      </div>
+      <div id="status-panel">
+        <div class="status-indicator blue"></div>
+        <div class="status-indicator green"></div>
+        <div class="status-indicator red"></div>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="control-panel">
+        <div class="panel-title">COMMAND</div>
+        <input type="text" class="command-input" id="command-input" placeholder="ENTER COMMAND ▶">
+        <div class="button-grid">
+          <button class="space-btn" id="scan-btn">SCAN SECTOR</button>
+          <button class="space-btn danger" id="override-btn">FORCE OVERRIDE</button>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <div class="panel-title">WEAPON SYSTEMS</div>
+        <div style="margin-bottom: 15px;">Freq: <span id="freq-display">2.45 GHz</span></div>
+        <input type="range" id="freq-slider" min="2.4" max="2.5" value="2.45" step="0.01">
+        <div style="margin: 15px 0 10px 0;">Power: <span id="vol-display">85%</span></div>
+        <input type="range" id="vol-slider" min="0" max="100" value="85">
+      </div>
+
+      <div class="control-panel">
+        <div class="panel-title">MISSION STATUS</div>
+        <div style="line-height: 2; font-size: 1em;">
+          <div>Uptime: <span id="uptime">00:00:00</span></div>
+          <div>Last Contact: <span id="last-scan">AWAITING</span></div>
+          <div>Confirmed Hits: <span id="targets-count">0</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content">
+      <div class="data-visualization">
+        <div class="orbital-sweep" style="animation-delay: 0s"></div>
+        <div class="orbital-sweep" style="animation-duration: 3s; animation-delay: 1.5s"></div>
+      </div>
+
+      <div id="terminal"></div>
+
+      <div class="target-grid">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">ENERGY SIG</div>
+            <div class="info-value" id="target-energy">SCANNING</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">LOCK STATUS</div>
+            <div class="info-value" id="target-lock">0%</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">RANGE</div>
+            <div class="info-value" id="target-distance">∞</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">VELOCITY</div>
+            <div class="info-value" id="target-velocity">0 km/s</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="weapon-panel">
+        <div class="weapon-section">
+          <h3>WEAPON LOADOUT</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <label>PRIMARY</label>
+              <select style="width: 100%; padding: 12px; background: rgba(0,0,0,0.7); border: 2px solid var(--spaceforce-blue); color: var(--spaceforce-blue); border-radius: 6px;">
+                <option>Microwave Lance</option>
+                <option>Particle Beam</option>
+                <option>Plasma Torpedo</option>
+              </select>
+            </div>
+            <div>
+              <label>SECONDARY</label>
+              <select style="width: 100%; padding: 12px; background: rgba(0,0,0,0.7); border: 2px solid var(--spaceforce-blue); color: var(--spaceforce-blue); border-radius: 6px;">
+                <option>Drone Swarm</option>
+                <option>Nanite Cloud</option>
+                <option>Missile Pod</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="weapon-section">
+          <h3>SHIP STATUS</h3>
+          <div class="status-grid">
+            <div class="status-item">
+              <div class="status-label">SHIELDS</div>
+              <div class="status-bar"><div class="status-fill" style="width: 88%"></div></div>
+            </div>
+            <div class="status-item">
+              <div class="status-label">HULL</div>
+              <div class="status-bar"><div class="status-fill" style="width: 92%"></div></div>
+            </div>
+            <div class="status-item">
+              <div class="status-label">REACTOR</div>
+              <div class="status-bar"><div class="status-fill" style="width: 95%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="weapon-section">
+          <div class="action-grid">
+            <button class="action-button danger">🔥 FIRE PRIMARY</button>
+            <button class="action-button">LAUNCH DRONES</button>
+            <button class="action-button">🛡️ SHIELDS UP</button>
+            <button class="action-button danger">⚡ HYPERJUMP</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer">
+      <div>SPACE FORCE CYBER DOMINION v3.0 | SOLAR DEFENSE NETWORK ACTIVE</div>
+      <div>QUANTUM RELAY SECURE ▶ THARA HUOKAING COMMAND</div>
+    </footer>
+  </div>
+
+  <script src="script1.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
