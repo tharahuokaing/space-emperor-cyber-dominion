@@ -3,7 +3,7 @@
 ```markdown
 # 🚀 SPACE FORCE - CYBER DOMINION v3.0 - COMPLETE COMMAND REFERENCE
 
-**Military Orbital Command & Cyber Warfare Platform**  
+** Robotic Military Orbital Command & Cyber Warfare Platform**  
 *Thara Huokaing - Solar Cyber Empire*  
 **Password Protected: `dutyfree`**
 
