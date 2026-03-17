@@ -10,7 +10,7 @@ class SpaceForceSecurity {
 
   initSecurity() {
     // Check if already authenticated
-    if (this.isAuthenticated()) {
+      if (this.isAuthenticated()) {
       this.activateDashboard();
       return;
     }
@@ -23,7 +23,7 @@ class SpaceForceSecurity {
   }
 
   isAuthenticated() {
-    return localStorage.getItem(this.AUTH_KEY) === 'AUTHORIZED';
+    return false; // Alwats Force Login
   }
 
   showSecurityScreen() {
@@ -372,6 +372,6 @@ document.onkeydown = (e) => {
 
 // Logout function (add to dashboard)
 function spaceForceLogout() {
-  localStorage.removeItem('spaceforce_authenticated');
+  sessionStorage.removeItem('spaceforce_authenticated');
   location.reload();
 }
