@@ -1,6 +1,6 @@
 
-// scripts.js - SPACE FORCE CYBER DOMINION v3.0
-// Military space command terminal + orbital weapons
+// scripts.js - SPACE EMPEROR CYBER DOMINION v3.0
+// EMPEROR space command terminal + orbital weapons
 
 class SpaceForceTerminal {
   constructor() {
@@ -83,7 +83,7 @@ class SpaceForceTerminal {
       '[WEAPONS] Railgun capacitors charged - 100%',
       '[AI] Tactical analysis core synchronized',
       '[NETWORK] Solar defense grid linked',
-      '[COMMAND] SPACE FORCE CYBER DOMINION - OPERATIONAL',
+      '[COMMAND] SPACE EMPEROR CYBER DOMINION - OPERATIONAL',
       '>>> SECTOR SCAN READY',
       ''
     ];
