@@ -32,7 +32,7 @@ class SpaceForceSecurity {
       <div id="security-overlay" class="security-lockout">
         <div class="security-container">
           <div class="security-emblem">🔒</div>
-          <h1 class="security-title">SPACE FORCE CYBER DOMINION</h1>
+          <h1 class="security-title">SPACE EMPEROR CYBER DOMINION</h1>
           <div class="security-subtitle">ORBITAL COMMAND AUTHENTICATION REQUIRED</div>
           
           <div class="auth-form">
